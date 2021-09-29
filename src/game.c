@@ -11,7 +11,7 @@ void go_up(parameters *params);
 void go_down(parameters *params);
 void go_left(parameters *params);
 void go_right(parameters *params);
-void change_color(parameters *params);
+void change_color(parameters *params, char *color);
 
 void up_four_times(parameters *params)
 {
@@ -21,9 +21,12 @@ void up_four_times(parameters *params)
 
 void game(parameters *params)
 {
-    up_four_times(params);
-    change_color(params);
-    go_down(params);
-    go_left(params);
     go_right(params);
+    change_color(params, "BLEU");
+    go_right(params);
+    change_color(params, "ROUGE");
+    go_right(params);
+    change_color(params, "JAUNE");
+    go_right(params);
+    change_color(params, "VERT");
 }

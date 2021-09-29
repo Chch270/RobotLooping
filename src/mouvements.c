@@ -57,16 +57,20 @@ void go_right(parameters *params)
     move(params, (sfVector2f){105, 0});
 }
 
-void change_color(parameters *params)
+void change_color(parameters *params, char *color)
 {
     sfVector2f pos = sfSprite_getPosition(params->player->sprite);
     sfVector2f mpos = {0};
+    sfColor new_color = {0, 0, 0, 0};
 
+    for (int i = 0; tab_colors[i].name != NULL; ++i)
+        if (!strcmp(tab_colors[i].name, color))
+            new_color = tab_colors[i].color;
     for (int i = 0; params->gmap[i] != NULL; ++i)
     {
         mpos = sfRectangleShape_getPosition(params->gmap[i]);
         if (mpos.x == pos.x && mpos.y == pos.y)
-            sfRectangleShape_setFillColor(params->gmap[i], sfBlue);
+            sfRectangleShape_setFillColor(params->gmap[i], new_color);
     }
     pause_clock(params);
 }

@@ -13,6 +13,19 @@
 #include "SFML/Window.h"
 #include <string.h>
 
+typedef struct tkt_s
+{
+    char *name;
+    const sfColor color;
+} tkt_t;
+
+static const tkt_t tab_colors[] = {
+    {"ROUGE", (sfColor){255, 0, 0, 255}},
+    {"BLEU", (sfColor){0, 0, 255, 255}},
+    {"VERT", (sfColor){0, 255, 0, 255}},
+    {"JAUNE", (sfColor){255, 255, 0, 255}},
+    {NULL, (sfColor){0, 0, 0, 0}}};
+
 typedef struct player_s
 {
     sfSprite *sprite;
