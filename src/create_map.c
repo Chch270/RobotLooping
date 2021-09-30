@@ -5,7 +5,8 @@
 ** create_map
 */
 
-#include "sfml.h"
+#include "../include/sfml.h"
+#include "../include/colors.h"
 #include <stdlib.h>
 
 player_t *create_player(char **map)
@@ -26,21 +27,46 @@ player_t *create_player(char **map)
     return (player);
 }
 
+void create_obstacles(parameters *params, char **map)
+{
+    sfTexture *texture = sfTexture_createFromFile("assets/obstacle.png", NULL);
+    int nobs = 0;
+    int size = 100;
+
+    for (int i = 0; map[i] != NULL; ++i)
+        for (int j = 0; map[i][j] != '\0'; ++j)
+            if (map[i][j] == '.')
+            {
+                params->obstacles = realloc(params->obstacles, sizeof(sfSprite *) * (nobs + 2));
+                params->obstacles[nobs] = sfSprite_create();
+                sfSprite_setTexture(params->obstacles[nobs], texture, sfFalse);
+                sfSprite_setPosition(params->obstacles[nobs], (sfVector2f){400 + (j * (size + 5)), 50 + (i * (size + 5))});
+                sfSprite_setScale(params->obstacles[nobs], (sfVector2f){0.167, 0.167});
+                params->obstacles[nobs + 1] = NULL;
+                ++nobs;
+            }
+}
+
 sfRectangleShape **create_map(char **map)
 {
-    sfRectangleShape **gmap = malloc((sizeof(sfRectangleShape *) * 20 * 20) + 1);
+    sfRectangleShape **gmap = NULL;
     int idx = 0;
     int size = 100;
 
-    gmap[(sizeof(sfRectangleShape *) * 10 * 10) + 1] = NULL;
     for (int i = 0; map[i] != NULL; ++i)
+    {
         for (int j = 0; map[i][j] != '\0'; ++j)
         {
+            gmap = realloc(gmap, sizeof(sfRectangleShape *) * (idx + 2));
             gmap[idx] = sfRectangleShape_create();
-            sfRectangleShape_setPosition(gmap[idx], (sfVector2f){400 + (i * (size + 5)), 50 + (j * (size + 5))});
+            sfRectangleShape_setPosition(gmap[idx], (sfVector2f){400 + (j * (size + 5)), 50 + (i * (size + 5))});
             sfRectangleShape_setSize(gmap[idx], (sfVector2f){size, size});
-            sfRectangleShape_setFillColor(gmap[idx], map[j][i] == 'G' ? sfYellow : sfGreen);
+            for (int x = 0; tab_colors[x].name != NULL; ++x)
+                if (tab_colors[x].letter == map[i][j])
+                    sfRectangleShape_setFillColor(gmap[idx], tab_colors[x].color);
             ++idx;
+            gmap[idx] = NULL;
         }
+    }
     return (gmap);
 }

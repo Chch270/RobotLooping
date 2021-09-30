@@ -32,4 +32,7 @@ clean:
 fclean: clean
 	rm -f $(NAME)
 
+debug: CPPFLAGS += -g3
+debug: re
+
 re:	fclean all

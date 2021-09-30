@@ -5,9 +5,10 @@
 ** mouvements
 */
 
-#include "sfml.h"
+#include "../include/sfml.h"
+#include "../include/colors.h"
 
-void display_game(sfRectangleShape **gmap, sfRenderWindow *win, player_t *player);
+void display_game(parameters *params);
 
 void pause_clock(parameters *params)
 {
@@ -23,38 +24,48 @@ void pause_clock(parameters *params)
         }
         if (sfTime_asMilliseconds(sfClock_getElapsedTime(clock)) > 1000)
         {
-            display_game(params->gmap, params->win, params->player);
+            display_game(params);
             sfClock_destroy(clock);
             return;
         }
     }
 }
 
-void move(parameters *params, sfVector2f move)
+int move(parameters *params, sfVector2f move)
 {
     sfVector2f now = sfSprite_getPosition(params->player->sprite);
+    sfVector2f block = {0};
+
+    if (params->obstacles)
+        for (int i = 0; params->obstacles[i] != NULL; ++i)
+        {
+            block = sfSprite_getPosition(params->obstacles[i]);
+            if (now.x + move.x == block.x && now.y + move.y == block.y)
+                return (0);
+        }
     sfSprite_setPosition(params->player->sprite, (sfVector2f){now.x + move.x, now.y + move.y});
     pause_clock(params);
+    return (1);
 }
 
-void go_up(parameters *params)
+int go_up(parameters *params)
 {
-    move(params, (sfVector2f){0, -105});
+    return move(params, (sfVector2f){0, -105});
 }
 
-void go_down(parameters *params)
+int go_down(parameters *params)
 {
-    move(params, (sfVector2f){0, 105});
+    return move(params, (sfVector2f){0, 105});
 }
 
-void go_left(parameters *params)
+int go_left(parameters *params)
 {
-    move(params, (sfVector2f){-105, 0});
+    return move(params, (sfVector2f){-105, 0});
 }
 
-void go_right(parameters *params)
+int go_right(parameters *params)
 {
-    move(params, (sfVector2f){105, 0});
+    return move(params, (sfVector2f){105, 0});
 }
 
 void change_color(parameters *params, char *color)

@@ -5,12 +5,12 @@
 ** game
 */
 
-#include "sfml.h"
+#include "../include/sfml.h"
 
-void go_up(parameters *params);
-void go_down(parameters *params);
-void go_left(parameters *params);
-void go_right(parameters *params);
+int go_up(parameters *params);
+int go_down(parameters *params);
+int go_left(parameters *params);
+int go_right(parameters *params);
 void change_color(parameters *params, char *color);
 
 void up_four_times(parameters *params)
