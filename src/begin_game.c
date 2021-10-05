@@ -25,6 +25,25 @@ void display_game(parameters *params)
     sfRenderWindow_clear(params->win, sfBlack);
 }
 
+void wait_end(sfEvent *event, parameters *params)
+{
+    while (1)
+    {
+        display_game(params);
+        while (sfRenderWindow_pollEvent(params->win, event))
+        {
+            if (event->type == sfEvtClosed)
+                sfRenderWindow_close(params->win);
+            if (event->type == sfEvtKeyPressed)
+                if (event->key.code == sfKeyQ)
+                {
+                    sfRenderWindow_close(params->win);
+                    return;
+                }
+        }
+    }
+}
+
 void begin_game(char **map)
 {
     sfEvent event;
@@ -32,16 +51,9 @@ void begin_game(char **map)
     sfRectangleShape **gmap = create_map(map);
     player_t *player = create_player(map);
     parameters params = {.gmap = gmap, .player = player, .win = win, .obstacles = NULL};
-    create_obstacles(&params, map);
 
-    while (sfRenderWindow_isOpen(win))
-    {
-        while (sfRenderWindow_pollEvent(win, &event))
-            if (event.type == sfEvtClosed)
-                sfRenderWindow_close(win);
-        display_game(&params);
-        game(&params);
-        sleep(5);
-        return;
-    }
+    create_obstacles(&params, map);
+    display_game(&params);
+    game(&params);
+    wait_end(&event, &params);
 }

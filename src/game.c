@@ -12,6 +12,7 @@ int go_down(parameters *params);
 int go_left(parameters *params);
 int go_right(parameters *params);
 void change_color(parameters *params, char *color);
+sfColor get_color(parameters *params);
 
 void up_four_times(parameters *params)
 {

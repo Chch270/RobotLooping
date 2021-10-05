@@ -5,6 +5,8 @@
 ** mouvements
 */
 
+#include <stdlib.h>
+#include <stdbool.h>
 #include "../include/sfml.h"
 #include "../include/colors.h"
 
@@ -21,6 +23,12 @@ void pause_clock(parameters *params)
         {
             if (event.type == sfEvtClosed)
                 sfRenderWindow_close(params->win);
+            if (event.type == sfEvtKeyPressed)
+                if (event.key.code == sfKeyQ)
+                {
+                    sfRenderWindow_close(params->win);
+                    exit(84);
+                }
         }
         if (sfTime_asMilliseconds(sfClock_getElapsedTime(clock)) > 1000)
         {
@@ -31,7 +39,7 @@ void pause_clock(parameters *params)
     }
 }
 
-int move(parameters *params, sfVector2f move)
+bool move(parameters *params, sfVector2f move)
 {
     sfVector2f now = sfSprite_getPosition(params->player->sprite);
     sfVector2f block = {0};
@@ -41,11 +49,11 @@ int move(parameters *params, sfVector2f move)
         {
             block = sfSprite_getPosition(params->obstacles[i]);
             if (now.x + move.x == block.x && now.y + move.y == block.y)
-                return (0);
+                return (false);
         }
     sfSprite_setPosition(params->player->sprite, (sfVector2f){now.x + move.x, now.y + move.y});
     pause_clock(params);
-    return (1);
+    return (true);
 }
 
 int go_up(parameters *params)
@@ -84,4 +92,18 @@ void change_color(parameters *params, char *color)
             sfRectangleShape_setFillColor(params->gmap[i], new_color);
     }
     pause_clock(params);
+}
+
+sfColor get_color(parameters *params)
+{
+    sfVector2f pos = {0};
+    sfVector2f player = sfSprite_getPosition(params->player->sprite);
+
+    for (int i = 0; params->gmap[i]; ++i)
+    {
+        pos = sfRectangleShape_getPosition(params->gmap[i]);
+        if (pos.x == player.x && pos.y == player.y)
+            return (sfRectangleShape_getFillColor(params->gmap[i]));
+    }
+    return ((sfColor){0, 0, 0, 255});
 }
